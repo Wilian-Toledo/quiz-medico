@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Médico - Torrent Pharma</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            text-align: center;
+            color: #2E3192;
+        }
+        .container {
+            max-width: 90%;
+            width: 600px;
+            margin: 30px auto;
+            padding: 25px;
+            border: 2px solid #2E3192;
+            border-radius: 10px;
+            background: #f8f8f8;
+        }
+        button {
+            background-color: #2E3192;
+            color: white;
+            font-size: 18px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 90%;
+            max-width: 300px;
+            transition: background-color 0.3s ease;
+        }
+
+        #btnEnviarResposta {
+            background-color: #28a745; /* Verde */
+            font-weight: bold;
+        }
+
+        #btnAvancar {
+            background-color: #ff9800; /* Laranja */
+            font-weight: bold;
+        }
+        p {
+            font-size: 18px;
+            line-height: 1.6;
+        }
+        .hidden {
+            display: none;
+        }
+        .correct {
+            background-color: #28a745 !important; /* Verde para resposta correta */
+        }
+        .wrong {
+            background-color: #dc3545 !important; /* Vermelho para resposta errada */
+        }
+        .selected {
+            background-color: #ffc107 !important; /* Amarelo para indicar resposta selecionada */
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+
+        input {
+            width: 100%;
+            max-width: 500px;
+            padding: 15px;
+            font-size: 18px;
+            border: 2px solid #2E3192;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .btn-iniciar {
+            width: 100%;
+            max-width: 500px;
+            font-size: 20px;
+            font-weight: bold;
+            padding: 15px;
+            background-color: #2E3192;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-iniciar:hover {
+            background-color: #1f256e;
+        }
+        @media (max-width: 768px) {
+            h2 {
+                font-size: 22px;
+            }
+
+            p {
+                font-size: 17px;
+            }
+
+            button {
+                font-size: 16px;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <img src="logo-torrent-pharma.png" alt="Torrent Pharma" style="width: 150px; margin: 20px;">
+    
+    <div class="container" id="formulario">
+        <h2>Identificação</h2>
+        <div class="input-group">
+            <input type="text" id="nome" placeholder="Nome" required>
+            <input type="text" id="ufcrm" placeholder="UF CRM" required>
+        </div>
+        <button class="btn-iniciar" onclick="iniciarQuiz()">Iniciar Quiz</button>
+    </div>    
+    
+    <div class="container hidden" id="quiz">
+        <h2>Pergunta <span id="numPergunta">1</span></h2>
+        <p id="pergunta"></p>
+        <div id="opcoes"></div>
+        <p id="feedback" style="font-weight: bold;"></p>
+        <button id="btnEnviarResposta" class="hidden" onclick="confirmarResposta()">Enviar Resposta</button>
+        <button id="btnAvancar" class="hidden" onclick="proximaPergunta()">Avançar</button>
+    </div>
+    
+    <div class="container hidden" id="resultado">
+        <h2>Resultado Final</h2>
+        <p id="pontuacao"></p>
+        <p>Obrigado por participar do nosso Quiz!</p>
+    </div>
+
+    <script>
+        const perguntas = [
+            {
+                pergunta: "Pergunta 1:\n\nPaciente de 42 anos, sem comorbidades, com episódio depressivo maior há 6 meses. Fez psicoterapia sem melhora e está em tratamento com ISRS há 8 semanas, mas segue com humor deprimido, anedonia, fadiga intensa e insônia. Sem sintomas psicóticos ou risco suicida iminente.\n\n👉 Qual o próximo passo? Escolha a resposta e veja o desfecho do caso!",
+                opcoes: [
+                    "Aumentar a dose do ISRS e reavaliar em 4 semanas.",
+                    "Associar um estabilizador de humor, como lítio, para potencializar o efeito antidepressivo.",
+                    "Considerar a troca para um antidepressivo dual, como a venlafaxina.",
+                    "Iniciar benzodiazepínico para melhorar o sono e a ansiedade antes de modificar o antidepressivo."
+                ],
+                resposta: 2,
+                justificativa: "A troca para um antidepressivo dual pode ser mais eficaz neste caso.",
+                formEntry: "entry.1923458532"
+            },
+            {
+                pergunta: "Pergunta 2:\n\nAgora, o paciente iniciou VENLIFT OD 37,5 mg/dia. Após 10 dias, relata leve melhora da energia, mas o humor deprimido persiste. Após 4 semanas com 75 mg/dia, mantém sintomas residuais, como falta de motivação e dificuldade de concentração.\n\n👉 Como proceder agora?",
+                opcoes: [
+                    "Aumentar a dose para 150 mg/dia, considerando o perfil de resposta do VENLIFT OD.",
+                    "Aumentar a dose para 120 mg/dia.",
+                    "Acrescentar um antipsicótico atípico como adjuvante.",
+                    "Trocar novamente para outro ISRS.",
+                    "Manter 75 mg/dia e aguardar mais 4 semanas."
+                ],
+                resposta: 0,
+                justificativa: "O aumento para 150 mg/dia pode otimizar a resposta terapêutica.",
+                formEntry: "entry.19089025"
+            },
+            {
+                pergunta: "Pergunta 3:\n\nApós o aumento da dose para 150 mg/dia, o paciente apresenta melhora global, mas relata sudorese excessiva e leve aumento da pressão arterial. Apesar dos efeitos colaterais, está satisfeito com a evolução clínica.\n\n👉 Como você conduziria esse caso agora?",
+                opcoes: [
+                    "Reduzir a dose para 112,5 mg/dia para equilibrar eficácia e tolerabilidade.",
+                    "Manter a dose e adotar estratégias para minimizar os efeitos adversos, como ajuste de horários.",
+                    "Trocar novamente para um ISRS.",
+                    "Acrescentar um beta-bloqueador para controlar a sudorese e a pressão arterial."
+                ],
+                resposta: 1,
+                justificativa: "Estratégias de ajuste podem minimizar efeitos adversos sem comprometer a eficácia.",
+                formEntry: "entry.2110222375"
+            }
+        ];
+
+        let indicePergunta = 0;
+        let pontuacao = 0;
+        let respostas = {};
+        let respostaSelecionada = null;
+
+        function iniciarQuiz() {
+            document.getElementById("formulario").classList.add("hidden");
+            document.getElementById("quiz").classList.remove("hidden");
+            carregarPergunta();
+        }
+
+        function carregarPergunta() {
+            let p = perguntas[indicePergunta];
+            document.getElementById("numPergunta").innerText = indicePergunta + 1;
+            document.getElementById("pergunta").innerText = p.pergunta;
+            let opcoesDiv = document.getElementById("opcoes");
+            opcoesDiv.innerHTML = "";
+            document.getElementById("feedback").innerText = "";
+            document.getElementById("btnEnviarResposta").classList.add("hidden");
+            document.getElementById("btnAvancar").classList.add("hidden");
+
+            respostaSelecionada = null;
+
+            p.opcoes.forEach((opcao, index) => {
+                let btn = document.createElement("button");
+                btn.innerText = opcao;
+                btn.onclick = () => selecionarResposta(index, btn);
+                opcoesDiv.appendChild(btn);
+                opcoesDiv.appendChild(document.createElement("br"));
+            });
+        }
+
+        function selecionarResposta(indice, botao) {
+            let botoes = document.querySelectorAll("#opcoes button");
+            botoes.forEach(btn => btn.classList.remove("selected"));
+            botao.classList.add("selected");
+
+            respostaSelecionada = indice;
+            document.getElementById("btnEnviarResposta").classList.remove("hidden");
+        }
+
+        function confirmarResposta() {
+            if (respostaSelecionada === null) return; // Garante que uma resposta foi escolhida
+
+            let p = perguntas[indicePergunta];
+            let botoes = document.querySelectorAll("#opcoes button");
+            respostas[p.formEntry] = p.opcoes[respostaSelecionada];
+
+            // Desativa todos os botões de resposta para impedir mudanças
+            botoes.forEach(btn => btn.disabled = true);
+
+            // Remove a classe de seleção para evitar confusão visual
+            botoes[respostaSelecionada].classList.remove("selected");
+
+            if (respostaSelecionada === p.resposta) {
+                pontuacao += 10;
+                botoes[respostaSelecionada].classList.add("correct");
+            } else {
+                botoes[respostaSelecionada].classList.add("wrong");
+            }
+
+            document.getElementById("feedback").innerText = p.justificativa;
+            document.getElementById("btnAvancar").classList.remove("hidden");
+            document.getElementById("btnEnviarResposta").classList.add("hidden");
+        }
+        function proximaPergunta() {
+            indicePergunta++;
+            if (indicePergunta < perguntas.length) {
+                carregarPergunta();
+            } else {
+                document.getElementById("quiz").classList.add("hidden");
+                document.getElementById("resultado").classList.remove("hidden");
+                document.getElementById("pontuacao").innerText = `Você acertou ${pontuacao} pontos!`;
+                enviarRespostas();
+            }
+        }
+        function enviarRespostas() {
+            let url = "https://docs.google.com/forms/d/e/1FAIpQLSckGmyf3v9vUia4QgPvZP_jnc5lNP2hmDzBIoKvV0jBtcTP2Q/formResponse";
+            let formData = new FormData();
+            formData.append("entry.248146308", document.getElementById("nome").value);
+            formData.append("entry.1641384743", document.getElementById("ufcrm").value);
+            formData.append("entry.1867756173", pontuacao.toString());
+
+            // Adicionando respostas das perguntas ao formulário
+            Object.keys(respostas).forEach(key => formData.append(key, respostas[key]));
+
+            fetch(url, { method: "POST", body: formData })
+                .then(response => console.log("Respostas enviadas com sucesso!"))
+                .catch(error => console.error("Erro ao enviar respostas:", error));
+        }
+
+    </script>
+</body>
+</html>
