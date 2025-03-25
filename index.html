@@ -110,7 +110,7 @@
     </style>
 </head>
 <body>
-    <img src="logo-torrent-pharma.png" alt="Torrent Pharma" style="width: 150px; margin: 20px;">
+    <img src="logo-torrent-pharma.png" alt="Torrent Pharma" style="width: 350px; margin: 20px;">
     
     <div class="container" id="formulario">
         <h2>Identificação</h2>
@@ -119,6 +119,9 @@
             <input type="text" id="ufcrm" placeholder="UF CRM" required>
         </div>
         <button class="btn-iniciar" onclick="iniciarQuiz()">Iniciar Quiz</button>
+        <div style="text-align: center; margin-top: 20px;">
+            <img src="Sem nome (1080 x 2160 px) (2).png" alt="Imagem abaixo do formulário" style="max-width: 100%; height: auto;">
+          </div>
     </div>    
     
     <div class="container hidden" id="quiz">
@@ -135,6 +138,14 @@
         <p id="pontuacao"></p>
         <p>Obrigado por participar do nosso Quiz!</p>
     </div>
+
+    <!-- Campo de telefone a ser mostrado após o quiz -->
+    <div id="phone-container" style="display:none; margin-top: 20px;">
+        <label for="phone">Digite seu telefone para acompanhar seu lugar no ranking:</label><br>
+        <input type="tel" id="phone" name="phone" placeholder="(00) 00000-0000" required>
+        <button onclick="enviarTelefone()">Enviar</button>
+    </div>
+
 
     <script>
         const perguntas = [
@@ -249,7 +260,8 @@
             } else {
                 document.getElementById("quiz").classList.add("hidden");
                 document.getElementById("resultado").classList.remove("hidden");
-                document.getElementById("pontuacao").innerText = `Você acertou ${pontuacao} pontos!`;
+                document.getElementById("pontuacao").innerText = `Sua pontuação final é de ${pontuacao} pontos!`;
+                document.getElementById("phone-container").style.display = "block";
                 enviarRespostas();
             }
         }
@@ -267,6 +279,16 @@
                 .then(response => console.log("Respostas enviadas com sucesso!"))
                 .catch(error => console.error("Erro ao enviar respostas:", error));
         }
+        function enviarTelefone() {
+            const telefone = document.getElementById('phone').value;
+            if (telefone.trim() === '') {
+                alert('Por favor, digite seu telefone.');
+                return;
+            }
+            alert('Telefone enviado com sucesso! Em breve você verá seu nome no ranking.');
+            // Aqui você pode adicionar código para enviar o telefone via API ou armazenar.
+        }
+
 
     </script>
 </body>
